@@ -16,4 +16,8 @@ router.get('/profile',authMiddleware,authController.profile);
 
 router.get("/admin",authMiddleware,isAdmin,adminController.getAdminDashboard);
 
+router.post("/refresh", authController.refresh);
+
+router.post('/logout',authController.logout)
 module.exports = router;
+

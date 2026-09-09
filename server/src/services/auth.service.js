@@ -2,6 +2,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const {generateAccessToken,generateRefreshToken} = require('./token.service');
 // const env = require('../config/env.js')
 
 const registerUser = async (userData)=>{
@@ -39,9 +40,20 @@ const loginUser = async (email,password)=>{
     throw new Error("Invalid email or password")
   }
 
-  const token = jwt.sign({id : user._id,role : user.role},process.env.JWT_SECRET,{expiresIn : "7d"})
+  // const token = jwt.sign({id : user._id,role : user.role},process.env.JWT_SECRET,{expiresIn : "7d"})
+
+  const accessToken  =   generateAccessToken(user);
+  const refreshToken  =  generateRefreshToken(user);
+  console.log(accessToken);
   return {
-  user,token
+    accessToken,
+    refreshToken, 
+    user: {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
   };
     
 }

@@ -1,5 +1,7 @@
 
 const jwt = require('jsonwebtoken');
+const env = require('../config/env')
+
 const authMiddleware = (req,res,next)=>{
    const  authHeader  =  req.headers.authorization;
  console.log(authHeader);
@@ -21,7 +23,10 @@ const authMiddleware = (req,res,next)=>{
  }
 
   try{
-    const decoded = jwt.verify(token,process.env.JWT_SECRET);
+    const decoded = jwt.verify(token,env.JWT_ACCESS_SECRET);
+    if(decoded.type  !== "access"){
+      return res.status(401).json({message : "Invalid access token"})
+    }
     req.user = decoded;
        next();
 
