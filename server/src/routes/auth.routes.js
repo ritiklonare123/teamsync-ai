@@ -10,7 +10,7 @@ const router =  express.Router();
 
 router.post('/register',validateRegister,authController.register);
 
-router.get('/login',authController.login);
+router.post('/login',authController.login);
 
 router.get('/profile',authMiddleware,authController.profile);
 
