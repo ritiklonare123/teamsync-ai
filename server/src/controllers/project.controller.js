@@ -1,4 +1,4 @@
-const { createProject ,getMyProjects,getProjectById,updateProject} = require('../services/project.service');
+const { createProject ,getMyProjects,getProjectById,updateProject,deleteProject,addMember,removeMember} = require('../services/project.service');
 
 
 const createProjectController = async (req,res)=>{
@@ -45,8 +45,7 @@ try{
 }
 
 const updateProjectController = async (req,res)=>{
-
-   try{
+     try{
            const projectId = req.params.id;
            const {name ,description} = req.body;
            const userId = req.user.id;
@@ -61,4 +60,57 @@ const updateProjectController = async (req,res)=>{
       })
    }
 }
-module.exports = {createProjectController,getMyProjectsController,getProjectByIdController,updateProjectController};
+
+const deleteProjectController = async (req,res)=>{
+        try{
+          const projectId = req.params.id;
+          const userId = req.user.id;
+          const project = await deleteProject(projectId,userId);
+          res.status(200).json({
+            message : "Project deleted successfully",
+            project 
+          })
+        }catch(error){
+             res.status(404).json({
+              message : error.message
+             })
+        }
+}
+
+const addMemberController = async (req,res)=>{
+try{
+     const projectId = req.params.id;
+     const memberId = req.body.userId;
+     const ownerId = req.user.id;
+     const project  = await addMember(projectId,memberId,ownerId); 
+     return res.status(200).json({
+      message: "Member added successfully",
+      project
+    });
+}catch(error){
+  return res.status(500).json({
+    message: error.message
+  });
+}
+}
+const removeMemberController = async (req,res)=>{
+  
+  try{
+       const projectId = req.params.id ;
+       const userId = req.params.userId;
+       const ownerId = req.user.id;
+
+       const project = await removeMember(projectId,userId,ownerId);
+       return res.status(200).json({
+        message: "Member removed successfully",
+        project
+      });
+
+  }catch(error){
+     res.status(500).json({
+      message : error.message
+     })
+  }
+
+}
+module.exports = {createProjectController,getMyProjectsController,getProjectByIdController,updateProjectController,deleteProjectController,addMemberController, removeMemberController};
